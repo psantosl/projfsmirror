@@ -7,7 +7,7 @@
     <ProjectGuid>{1ED51604-045C-4914-8054-15AAED90FF45}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>MirrorProvider.Windows</RootNamespace>
-    <AssemblyName>MirrorProvider.Windows</AssemblyName>
+    <AssemblyName>projfsmirror</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -77,5 +77,4 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
   </ItemGroup>
-
 </Project>

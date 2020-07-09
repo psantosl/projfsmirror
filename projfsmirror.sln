@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "profsmirror", "MirrorProvider.Windows\profsmirror.csproj", "{1ED51604-045C-4914-8054-15AAED90FF45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "profsmirror", "src\profsmirror.csproj", "{1ED51604-045C-4914-8054-15AAED90FF45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
