@@ -2,9 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MirrorProvider.Windows", "MirrorProvider.Windows\MirrorProvider.Windows.csproj", "{1ED51604-045C-4914-8054-15AAED90FF45}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorProvider", "MirrorProvider\MirrorProvider.csproj", "{128451A2-7598-4142-BA2A-9B963D91CCBC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "profsmirror", "MirrorProvider.Windows\profsmirror.csproj", "{1ED51604-045C-4914-8054-15AAED90FF45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,14 +18,6 @@ Global
 		{1ED51604-045C-4914-8054-15AAED90FF45}.Release.Mac|x64.ActiveCfg = Release|x64
 		{1ED51604-045C-4914-8054-15AAED90FF45}.Release.Windows|x64.ActiveCfg = Release|x64
 		{1ED51604-045C-4914-8054-15AAED90FF45}.Release.Windows|x64.Build.0 = Release|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Debug.Mac|x64.ActiveCfg = Debug|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Debug.Mac|x64.Build.0 = Debug|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Debug.Windows|x64.ActiveCfg = Debug|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Debug.Windows|x64.Build.0 = Debug|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Release.Mac|x64.ActiveCfg = Release|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Release.Mac|x64.Build.0 = Release|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Release.Windows|x64.ActiveCfg = Release|x64
-		{128451A2-7598-4142-BA2A-9B963D91CCBC}.Release.Windows|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
