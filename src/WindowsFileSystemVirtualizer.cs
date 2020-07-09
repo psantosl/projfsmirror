@@ -72,7 +72,12 @@ namespace MirrorProvider.Windows
             return false;
         }
 
-        public HResult StartDirectoryEnumerationCallback(int commandId, Guid enumerationId, string relativePath, uint triggeringProcessId, string triggeringProcessImageFileName)
+        HResult IRequiredCallbacks.StartDirectoryEnumerationCallback(
+            int commandId,
+            Guid enumerationId,
+            string relativePath,
+            uint triggeringProcessId,
+            string triggeringProcessImageFileName)
         {
             // Console.WriteLine($"StartDirectoryEnumeration: `{relativePath}`, {enumerationId}");
 
@@ -91,7 +96,7 @@ namespace MirrorProvider.Windows
             return HResult.Ok;
         }
 
-        public HResult EndDirectoryEnumerationCallback(Guid enumerationId)
+        HResult IRequiredCallbacks.EndDirectoryEnumerationCallback(Guid enumerationId)
         {
             // Console.WriteLine($"EndDirectioryEnumeration: {enumerationId}");
 
@@ -104,7 +109,7 @@ namespace MirrorProvider.Windows
             return HResult.Ok;
         }
 
-        public HResult GetDirectoryEnumerationCallback(
+        HResult IRequiredCallbacks.GetDirectoryEnumerationCallback(
             int commandId,
             Guid enumerationId, 
             string filterFileName, 
@@ -170,7 +175,7 @@ namespace MirrorProvider.Windows
             }
         }
 
-        public HResult GetPlaceholderInfoCallback(
+        HResult IRequiredCallbacks.GetPlaceholderInfoCallback(
             int commandId,
             string relativePath,
             uint triggeringProcessId,
@@ -205,7 +210,7 @@ namespace MirrorProvider.Windows
             return result;
         }
 
-        public HResult GetFileDataCallback(
+        HResult IRequiredCallbacks.GetFileDataCallback(
             int commandId,
             string relativePath,
             ulong byteOffset,
