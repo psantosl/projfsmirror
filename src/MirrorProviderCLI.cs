@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using MirrorProvider.Windows;
 using System;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace MirrorProvider
 {
     public static class MirrorProviderCLI
     {
-        public static void Run(string[] args, FileSystemVirtualizer fileSystemVirtualizer)
+        public static void Run(string[] args, WindowsFileSystemVirtualizer fileSystemVirtualizer)
         {
             new Parser(
                 settings =>

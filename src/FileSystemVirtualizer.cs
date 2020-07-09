@@ -5,51 +5,41 @@ using System.Linq;
 
 namespace MirrorProvider
 {
-    public abstract class FileSystemVirtualizer
+    public static class FileSystemVirtualizer
     {
-        protected Enlistment Enlistment { get; private set; }
-
-        protected abstract StringComparison PathComparison { get; }
-        protected abstract StringComparer PathComparer { get; }
-
-        public abstract bool TryConvertVirtualizationRoot(string directory, out string error);
-        public virtual bool TryStartVirtualizationInstance(Enlistment enlistment, out string error)
+        internal static string GetFullPathInMirror(Enlistment enlistment, string relativePath)
         {
-            this.Enlistment = enlistment;
-            error = null;
-            return true;
+            return Path.Combine(enlistment.MirrorRoot, relativePath);
         }
 
-        protected string GetFullPathInMirror(string relativePath)
+        internal static bool DirectoryExists(Enlistment enlistment, string relativePath)
         {
-            return Path.Combine(this.Enlistment.MirrorRoot, relativePath);
-        }
-
-        protected bool DirectoryExists(string relativePath)
-        {
-            string fullPathInMirror = this.GetFullPathInMirror(relativePath);
+            string fullPathInMirror = GetFullPathInMirror(enlistment, relativePath);
             DirectoryInfo dirInfo = new DirectoryInfo(fullPathInMirror);
 
             return dirInfo.Exists;
         }
 
-        protected bool FileExists(string relativePath)
+        internal static bool FileExists(Enlistment enlistment, string relativePath)
         {
-            string fullPathInMirror = this.GetFullPathInMirror(relativePath);
+            string fullPathInMirror = GetFullPathInMirror(enlistment, relativePath);
             FileInfo fileInfo = new FileInfo(fullPathInMirror);
 
             return fileInfo.Exists;
         }
 
-        protected ProjectedFileInfo GetFileInfo(string relativePath)
+        internal static ProjectedFileInfo GetFileInfo(
+            Enlistment enlistment,
+            string relativePath,
+            StringComparison pathComparison)
         {
-            string fullPathInMirror = this.GetFullPathInMirror(relativePath);
+            string fullPathInMirror = GetFullPathInMirror(enlistment, relativePath);
             string fullParentPath = Path.GetDirectoryName(fullPathInMirror);
             string fileName = Path.GetFileName(relativePath);
 
             string actualCaseName;
             ProjectedFileInfo.FileType type;
-            if (this.FileOrDirectoryExists(fullParentPath, fileName, out actualCaseName, out type))
+            if (FileOrDirectoryExists(fullParentPath, fileName, pathComparison, out actualCaseName, out type))
             {
                 return new ProjectedFileInfo(
                     actualCaseName, 
@@ -60,9 +50,9 @@ namespace MirrorProvider
             return null;
         }
 
-        protected IEnumerable<ProjectedFileInfo> GetChildItems(string relativePath)
+        internal static IEnumerable<ProjectedFileInfo> GetChildItems(Enlistment enlistment, string relativePath)
         {
-            string fullPathInMirror = this.GetFullPathInMirror(relativePath);
+            string fullPathInMirror = GetFullPathInMirror(enlistment, relativePath);
             DirectoryInfo dirInfo = new DirectoryInfo(fullPathInMirror);
 
             if (!dirInfo.Exists)
@@ -99,9 +89,9 @@ namespace MirrorProvider
             }
         }
 
-        protected FileSystemResult HydrateFile(string relativePath, int bufferSize, Func<byte[], uint, bool> tryWriteBytes)
+        internal static FileSystemResult HydrateFile(Enlistment enlistment, string relativePath, int bufferSize, Func<byte[], uint, bool> tryWriteBytes)
         {
-            string fullPathInMirror = this.GetFullPathInMirror(relativePath);
+            string fullPathInMirror = GetFullPathInMirror(enlistment, relativePath);
             if (!File.Exists(fullPathInMirror))
             {
                 return FileSystemResult.EFileNotFound;
@@ -132,9 +122,10 @@ namespace MirrorProvider
             return FileSystemResult.Success;
         }
 
-        private bool FileOrDirectoryExists(
+        static bool FileOrDirectoryExists(
             string fullParentPath,
             string fileName,
+            StringComparison pathComparison,
             out string actualCaseName,
             out ProjectedFileInfo.FileType type)
         {
@@ -150,7 +141,7 @@ namespace MirrorProvider
             FileSystemInfo fileSystemInfo = 
                 dirInfo
                 .GetFileSystemInfos()
-                .FirstOrDefault(fsInfo => fsInfo.Name.Equals(fileName, PathComparison));
+                .FirstOrDefault(fsInfo => fsInfo.Name.Equals(fileName, pathComparison));
 
             if (fileSystemInfo == null)
             {

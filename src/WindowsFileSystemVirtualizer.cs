@@ -7,15 +7,16 @@ using System.Linq;
 
 namespace MirrorProvider.Windows
 {
-    public class WindowsFileSystemVirtualizer : FileSystemVirtualizer, IRequiredCallbacks
+    public class WindowsFileSystemVirtualizer : IRequiredCallbacks
     {
+        Enlistment Enlistment { get; set; }
         private VirtualizationInstance virtualizationInstance;
         private ConcurrentDictionary<Guid, ActiveEnumeration> activeEnumerations = new ConcurrentDictionary<Guid, ActiveEnumeration>();
 
-        protected override StringComparison PathComparison => StringComparison.OrdinalIgnoreCase;
-        protected override StringComparer PathComparer => StringComparer.OrdinalIgnoreCase;
+        StringComparison PathComparison => StringComparison.OrdinalIgnoreCase;
+        StringComparer PathComparer => StringComparer.OrdinalIgnoreCase;
 
-        public override bool TryConvertVirtualizationRoot(string directory, out string error)
+        public bool TryConvertVirtualizationRoot(string directory, out string error)
         {
             error = string.Empty;
             HResult result = VirtualizationInstance.MarkDirectoryAsVirtualizationRoot(directory, Guid.NewGuid());
@@ -28,7 +29,7 @@ namespace MirrorProvider.Windows
             return true;
         }
 
-        public override bool TryStartVirtualizationInstance(Enlistment enlistment, out string error)
+        public bool TryStartVirtualizationInstance(Enlistment enlistment, out string error)
         {
             uint threadCount = (uint)Environment.ProcessorCount * 2;
 
@@ -62,7 +63,9 @@ namespace MirrorProvider.Windows
 
             if (result == HResult.Ok)
             {
-                return base.TryStartVirtualizationInstance(enlistment, out error);
+                this.Enlistment = enlistment;
+                error = null;
+                return true;
             }
 
             error = result.ToString("F");
@@ -76,7 +79,7 @@ namespace MirrorProvider.Windows
             // On Windows, we have to sort the child items. The PrjFlt driver takes our list and merges it with
             // what is on disk, and it assumes that both lists are already sorted.
             ActiveEnumeration activeEnumeration = new ActiveEnumeration(
-                this.GetChildItems(relativePath)
+                FileSystemVirtualizer.GetChildItems(Enlistment, relativePath)
                 .OrderBy(file => file.Name, PathComparer)
                 .ToList());
 
@@ -175,7 +178,7 @@ namespace MirrorProvider.Windows
         {
             //// Console.WriteLine($"GetPlaceholderInfoCallback: `{relativePath}`");
 
-            ProjectedFileInfo fileInfo = this.GetFileInfo(relativePath);
+            ProjectedFileInfo fileInfo = FileSystemVirtualizer.GetFileInfo(Enlistment, relativePath, PathComparison);
             if (fileInfo == null)
             {
                 return HResult.FileNotFound;
@@ -215,7 +218,7 @@ namespace MirrorProvider.Windows
         {
             Console.WriteLine($"GetFileDataCallback: `{relativePath}`");
 
-            if (!this.FileExists(relativePath))
+            if (!FileSystemVirtualizer.FileExists(Enlistment, relativePath))
             {
                 return HResult.FileNotFound;
             }
@@ -227,7 +230,8 @@ namespace MirrorProvider.Windows
                 {
                     ulong writeOffset = 0;
 
-                    FileSystemResult hydrateFileResult = this.HydrateFile(
+                    FileSystemResult hydrateFileResult = FileSystemVirtualizer.HydrateFile(
+                        Enlistment,
                         relativePath,
                         bufferSize,
                         (readBuffer, bytesToCopy) =>
@@ -273,7 +277,7 @@ namespace MirrorProvider.Windows
 
             string parentDirectory = Path.GetDirectoryName(relativePath);
             string childName = Path.GetFileName(relativePath);
-            if (this.GetChildItems(parentDirectory).Any(child => child.Name.Equals(childName, PathComparison)))
+            if (FileSystemVirtualizer.GetChildItems(Enlistment, parentDirectory).Any(child => child.Name.Equals(childName, PathComparison)))
             {
                 return HResult.Ok;
             }

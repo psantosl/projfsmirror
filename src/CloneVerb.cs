@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using CommandLine;
+using MirrorProvider.Windows;
 
 namespace MirrorProvider
 {
@@ -21,7 +22,7 @@ namespace MirrorProvider
             HelpText = "The path to create the mirrored enlistment in")]
         public string EnlistmentRoot { get; set;  }
 
-        public void Execute(FileSystemVirtualizer fileSystemVirtualizer)
+        public void Execute(WindowsFileSystemVirtualizer fileSystemVirtualizer)
         {   
             Console.WriteLine($"Cloning from {Path.GetFullPath(this.PathToMirror)} to {Path.GetFullPath(this.EnlistmentRoot)}");
 
